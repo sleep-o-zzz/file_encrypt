@@ -29,7 +29,7 @@ def encrypt():
 			messagebox.showwarning("文件加密","两次输入的密码不同！")
 
 	filename = filedialog.askopenfilename(filetypes=[("所有文件","*")])
-	if filename != None:
+	if filename != "":
 		
 		win01 = tk.Toplevel(rw)
 		win01.resizable(0,0)
@@ -57,7 +57,7 @@ def deciphering():
 		del win01
 
 	filename = filedialog.askopenfilename(filetypes=[("加密后的文件","after_encrypt")])
-	if filename != None:
+	if filename != "":
 		
 		win01 = tk.Toplevel(rw)
 		win01.resizable(0,0)
