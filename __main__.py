@@ -9,6 +9,9 @@ if sys.version_info.minor < 9:
 	print("这个程序需要 Python 3.9 及以上的版本才能运行。")
 	exit()
 
+if os.system("openssl version") != 0:
+	print("这个程序需要电脑上安装 OpenSSL 才能运行。")
+
 try:
 	import tkinter as tk
 	from tkinter import filedialog,messagebox
