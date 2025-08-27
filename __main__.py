@@ -50,11 +50,14 @@ def encrypt():
 # os.system("openssl enc -d -aes-256-cbc -in " + filename + " -out " + filename.removesuffix(".after_encrypt") + " -k " + label1.get()) # Encrypt Command
 def deciphering():
 	def ok():
-		os.system("openssl enc -d -aes-256-cbc -in " + filename + " -out " + filename.removesuffix(".after_encrypt") + " -k " + passwdentry.get()) # Encrypt Command
-		messagebox.showinfo("文件加密","已解密文件\"" + filename + "\"。")
-		nonlocal win01
-		win01.destroy()
-		del win01
+		returnvalue = os.system("openssl enc -d -aes-256-cbc -in " + filename + " -out " + filename.removesuffix(".after_encrypt") + " -k " + passwdentry.get()) # Encrypt Command
+		if returnvalue == 0:
+			messagebox.showinfo("文件加密","已解密文件\"" + filename + "\"。")
+			nonlocal win01
+			win01.destroy()
+			del win01
+		else:
+			messagebox.showwarning("文件加密","您输入的密码有误，请重新输入。")
 
 	filename = filedialog.askopenfilename(filetypes=[("加密后的文件","after_encrypt")])
 	if filename != "":
