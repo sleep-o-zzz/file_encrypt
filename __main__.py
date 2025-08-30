@@ -1,23 +1,36 @@
 
-import os,sys
+import os,sys,webbrowser
 
 try:
 	import tkinter as tk
 	from tkinter import filedialog,messagebox
 except ModuleNotFoundError as e:
 	print("这个程序需要 tkinter 才能运行。")
+	if input("安装 tkinter 吗？(输入Y(是)或其他(否))").upper == "Y":
+		if sys.platform.startswith("darwin"):
+			webbrowser.open("https://www.python.org/download/mac/tcltk/")
+		elif sys.platform.startswith("linux"):
+			os.system("sudo apt-get install python3-tk")
 	exit()
 
 if sys.version_info.major < 3:
-	messagebox.showerror("文件加密","这个程序需要 Python 3.9 及以上的版本才能运行。")
+	if messagebox.askyesno("文件加密","这个程序需要 Python 3.9 及以上的版本才能运行。前往安装界面吗？"):
+		webbrowser.open("https://www.python.org/downloads/")
 	exit()
 
 if sys.version_info.minor < 9:
-	messagebox.showerror("文件加密","这个程序需要 Python 3.9 及以上的版本才能运行。")
+	if messagebox.askyesno("文件加密","这个程序需要 Python 3.9 及以上的版本才能运行。前往安装界面吗？"):
+		webbrowser.open("https://www.python.org/downloads/")
 	exit()
 
 if os.system("openssl version") != 0:
-	messagebox.showerror("文件加密","这个程序需要电脑上安装 OpenSSL 才能运行。")
+	if messagebox.askyesno("文件加密","这个程序需要电脑上安装 OpenSSL 才能运行。前往安装界面吗？"):
+		if sys.platform.startswith("win32"):
+			webbrowser.open("https://slproweb.com/products/Win32OpenSSL.html")
+		elif sys.platform.startswith("darwin"):
+			os.system("brew install openssl")
+			os.system("brew update openssl")
+			
 
 
 
