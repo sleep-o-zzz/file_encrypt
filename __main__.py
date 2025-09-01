@@ -38,7 +38,10 @@ if os.system("openssl version") != 0:
 def encrypt():
 	def ok():
 		if passwdentry.get() == repasswdentry.get():
-			os.system("openssl enc -aes-256-cbc -salt -in " + filename + " -out " + filename + ".after_encrypt -k "+passwdentry.get()) # Encrypt Command
+			messagebox.showwarning("文件加密","1.接下来会弹出一个黑色终端窗口，请勿直接关闭，否则加密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
+			returnvalue = os.system("openssl enc -aes-256-cbc -salt -in " + filename + " -out " + filename + ".after_encrypt -k "+passwdentry.get()) # Encrypt Command
+			if returnvalue != 0:
+				messagebox.showwarning("文件加密","加密失败。")
 			messagebox.showinfo("文件加密","已加密文件\"" + filename + "\"。")
 			nonlocal win01
 			win01.destroy()
@@ -68,6 +71,7 @@ def encrypt():
 # os.system("openssl enc -d -aes-256-cbc -in " + filename + " -out " + filename.removesuffix(".after_encrypt") + " -k " + label1.get()) # Encrypt Command
 def deciphering():
 	def ok():
+		messagebox.showwarning("文件加密","1.接下来会弹出一个黑色终端窗口，请勿直接关闭，否则解密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
 		returnvalue = os.system("openssl enc -d -aes-256-cbc -in " + filename + " -out " + filename.removesuffix(".after_encrypt") + " -k " + passwdentry.get()) # Encrypt Command
 		if returnvalue == 0:
 			messagebox.showinfo("文件加密","已解密文件\"" + filename + "\"。")
@@ -75,7 +79,7 @@ def deciphering():
 			win01.destroy()
 			del win01
 		else:
-			messagebox.showwarning("文件加密","您输入的密码有误，请重新输入。")
+			messagebox.showwarning("文件加密","解密失败；可能是您输入的密码有误，请重新输入。")
 
 	filename = filedialog.askopenfilename(filetypes=[("加密后的文件","after_encrypt")])
 	if filename != "":
