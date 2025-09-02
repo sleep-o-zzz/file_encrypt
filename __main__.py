@@ -1,5 +1,5 @@
 
-import os,sys,webbrowser,zipfile
+import os,sys,webbrowser,zipfile,shutil  
 
 try:
 	import tkinter as tk
@@ -43,6 +43,11 @@ def zip_folder(folder_path):
 	with zipfile.ZipFile(folder_path + ".zip", 'w') as zipObj:
 		zipdir(folder_path, zipObj)
 	return folder_path + ".zip"
+
+def rmdir(path):
+	
+
+	shutil.rmtree(path)
 
 
 def encrypt():
@@ -108,7 +113,7 @@ def encrypt():
 					if messagebox.askyesno("文件加密","删除源文件吗？"):
 						try:
 							os.remove(foldername)
-							os.removedirs(foldername.removesuffix(".zip"))
+							rmdir(foldername.removesuffix(".zip"))
 						except Exception as e:
 							messagebox.showerror("文件加密","出现问题：\n" + str(e))
 						else:
