@@ -176,9 +176,50 @@ def deciphering():
 		else:
 			messagebox.showwarning("文件加密","您未选择文件。")
 
+	def onefolder():
+		def ok():
+			fail_flag = False
+			messagebox.showwarning("文件加密","1.接下来可能会弹出一个黑色终端窗口，请勿直接关闭，否则解密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
+			for root, dirs, files in os.walk(filename):
+				for file in files:
+					returnvalue = os.system("openssl enc -d -aes-256-cbc -in \"" + os.path.join(root, file) + "\" -out \"" + os.path.join(root, file).removesuffix(".after_encrypt") + "\" -k " + passwdentry.get())
+					if returnvalue != 0:
+						os.remove(os.path.join(root, file).removesuffix(".after_encrypt"))
+						fail_flag = True
+						break
+				if fail_flag:
+					break
+			if not fail_flag:
+				messagebox.showinfo("文件加密","已解密文件\"" + filename + "\"。")
+				nonlocal win01
+				win01.destroy()
+				del win01
+			else:
+				messagebox.showwarning("文件加密","解密失败；可能是您输入的密码有误，请重新输入。")
+				os.remove(filename.removesuffix(".after_encrypt"))
+		
+
+		filename = filedialog.askdirectory()
+		if filename != "":
+			
+			win01 = tk.Toplevel(rw)
+			win01.resizable(0,0)
+			win01.geometry("300x100")
+			label1 = tk.Label(win01,text="请输入密码")
+			label1.pack()
+			passwdentry = tk.Entry(win01,show="*")
+			passwdentry.pack()
+			okbutton = tk.Button(win01,text="下一步",command=ok)
+			okbutton.pack()
+		else:
+			messagebox.showwarning("文件加密","您未选择文件。")
 	
-	
-	onefile()
+	stw = tk.Toplevel(rw)# Select Type Window 选择类型（单个文件/单文件夹）
+	stw.geometry("100x100")
+	b1 = tk.Button(stw,text="单个文件",command=onefile)
+	b2 = tk.Button(stw,text="单个文件夹",command=onefolder)
+	b1.pack()
+	b2.pack()
 
 
 rw = tk.Tk()
