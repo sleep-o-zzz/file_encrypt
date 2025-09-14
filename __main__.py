@@ -1,9 +1,9 @@
 # __main__.py
 # 本文件是文件加密(File Encrypt)项目的一部分。
-# 当前版本：[18]
-# 修改内容：为方便后期更改，调整了部分细节
+# 当前版本：[20]
+# 修改内容：版本 0.1.0
 
-import os,sys,webbrowser,zipfile,shutil,ctypes
+import os,sys,webbrowser
 
 try:
 	import tkinter as tk
