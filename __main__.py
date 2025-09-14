@@ -1,3 +1,7 @@
+# __main__.py
+# 本文件是文件加密(File Encrypt)项目的一部分。
+# 当前版本：[16]
+# 修改内容：添加了注释
 
 import os,sys,webbrowser,zipfile,shutil  
 
