@@ -1,9 +1,9 @@
 # __main__.py
 # 本文件是文件加密(File Encrypt)项目的一部分。
-# 当前版本：[18]
-# 修改内容：为方便后期更改，调整了部分细节
+# 当前版本：[19]
+# 修改内容：一堆失败的更改
 
-import os,sys,webbrowser,zipfile,shutil,ctypes
+import os,sys,webbrowser,numpy,hashlib
 
 try:
 	import tkinter as tk
@@ -84,12 +84,19 @@ def run():
 				if passwdentry.get() == repasswdentry.get():
 					delsrc = messagebox.askyesno("文件加密","在加密后删除源文件吗？")
 					messagebox.showwarning("文件加密","1.接下来可能会连续弹出弹出多个黑色终端窗口，请勿直接关闭，否则加密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
+					hashobj = hashlib.sha256()
+					hashobj.update(passwdentry.get().encode('utf-8'))
+					hash_value = hashobj.hexdigest()
+					data = [hash_value]
+					m = numpy.array(data)
+					numpy.save(foldername+"\\after_encrypt_dic",m)		# 保存
 					for root, dirs, files in os.walk(foldername):
 						for file in files:
 							# print(os.path.join(root, file))
-							os.system("openssl enc -aes-256-cbc -salt -in \"" + os.path.join(root, file) + "\" -out \"" + os.path.join(root, file) + ".after_encrypt\" -k "+passwdentry.get())
-							if delsrc:
-								os.remove(os.path.join(root, file))
+							if not ("after_encrypt_dic" in os.path.join(root, file)):
+								os.system("openssl enc -aes-256-cbc -salt -in \"" + os.path.join(root, file) + "\" -out \"" + os.path.join(root, file) + ".after_encrypt\" -k "+passwdentry.get())
+							# if delsrc:
+							# 	os.remove(os.path.join(root, file))
 					if False:
 						pass
 					else:
@@ -157,25 +164,32 @@ def run():
 
 		def onefolder():
 			def ok():
-				fail_flag = False
-				messagebox.showwarning("文件加密","1.接下来可能会弹出一个黑色终端窗口，请勿直接关闭，否则解密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
-				for root, dirs, files in os.walk(filename):
-					for file in files:
-						returnvalue = os.system("openssl enc -d -aes-256-cbc -in \"" + os.path.join(root, file) + "\" -out \"" + os.path.join(root, file).removesuffix(".after_encrypt") + "\" -k " + passwdentry.get())
-						if returnvalue != 0:
-							os.remove(os.path.join(root, file).removesuffix(".after_encrypt"))
-							fail_flag = True
-							break
-					if fail_flag:
-						break
-				if not fail_flag:
-					messagebox.showinfo("文件加密","已解密文件\"" + filename + "\"。")
-					nonlocal win01
-					win01.destroy()
-					del win01
+
+				a = numpy.load(filename + "\\after_encrypt_dic.npy")		# 读取
+				hashobj = hashlib.sha256()
+				hashobj.update(passwdentry.get().encode('utf-8'))
+				hash_value = hashobj.hexdigest()
+				if (a[0] != hash_value):
+					messagebox.showwarning("文件加密","密码错误，请重新输入。")
 				else:
-					messagebox.showwarning("文件加密","解密失败；可能是您输入的密码有误，请重新输入。")
-					os.remove(filename.removesuffix(".after_encrypt"))
+					fail_flag = False
+					messagebox.showwarning("文件加密","1.接下来可能会弹出一个黑色终端窗口，请勿直接关闭，否则解密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
+					for root, dirs, files in os.walk(filename):
+						for file in files:
+							returnvalue = os.system("openssl enc -d -aes-256-cbc -in \"" + os.path.join(root, file) + "\" -out \"" + os.path.join(root, file).removesuffix(".after_encrypt") + "\" -k " + passwdentry.get())
+							if returnvalue != 0:
+								os.remove(os.path.join(root, file).removesuffix(".after_encrypt"))
+								fail_flag = True
+								break
+						if fail_flag:
+							break
+					if not fail_flag:
+						messagebox.showinfo("文件加密","已解密文件\"" + filename + "\"。")
+						nonlocal win01
+						win01.destroy()
+						del win01
+					else:
+						messagebox.showwarning("文件加密","解密失败；可能是您输入的密码有误，请重新输入。")
 
 			filename = filedialog.askdirectory()
 			if filename != "":
@@ -212,4 +226,7 @@ def run():
 
 	rw.mainloop()
 
-run()
+try:
+	run()
+except Exception as e:
+	messagebox.showerror("崩溃","系统已崩溃。\n" + str(e))
