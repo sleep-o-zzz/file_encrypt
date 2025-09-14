@@ -69,7 +69,6 @@ def encrypt():
 					if messagebox.askyesno("文件加密","删除源文件吗？"):
 						try:
 							os.remove(filename)
-							os.removedirs(filename.removesuffix(".zip"))
 						except Exception as e:
 							messagebox.showerror("文件加密","出现问题：\n" + str(e))
 						else:
@@ -101,30 +100,28 @@ def encrypt():
 	
 		def ok():
 			if passwdentry.get() == repasswdentry.get():
-				messagebox.showwarning("文件加密","1.接下来可能会弹出一个黑色终端窗口，请勿直接关闭，否则加密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
-				returnvalue = os.system("openssl enc -aes-256-cbc -salt -in \"" + foldername + "\" -out \"" + foldername + ".after_encrypt\" -k "+passwdentry.get()) # Encrypt Command
-				if returnvalue != 0:
-					messagebox.showwarning("文件加密","加密失败。")
+				delsrc = messagebox.askyesno("文件加密","在加密后删除源文件吗？")
+				messagebox.showwarning("文件加密","1.接下来可能会连续弹出弹出多个黑色终端窗口，请勿直接关闭，否则加密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
+				for root, dirs, files in os.walk(foldername):
+					for file in files:
+						# print(os.path.join(root, file))
+						os.system("openssl enc -aes-256-cbc -salt -in \"" + os.path.join(root, file) + "\" -out \"" + os.path.join(root, file) + ".after_encrypt\" -k "+passwdentry.get())
+						if delsrc:
+							os.remove(os.path.join(root, file))
+				if False:
+					pass
 				else:
 					messagebox.showinfo("文件加密","已加密文件\"" + foldername + "\"。")
 					nonlocal win01
 					win01.destroy()
 					del win01
-					if messagebox.askyesno("文件加密","删除源文件吗？"):
-						try:
-							os.remove(foldername)
-							rmdir(foldername.removesuffix(".zip"))
-						except Exception as e:
-							messagebox.showerror("文件加密","出现问题：\n" + str(e))
-						else:
-							messagebox.showinfo("文件加密","成功删除源文件。")
+					
 			else:
 				messagebox.showwarning("文件加密","两次输入的密码不同！")
 		nonlocal stw
 		stw.destroy()
 		foldername = filedialog.askdirectory()
 		if foldername != "":
-			foldername = zip_folder(foldername)
 			win01 = tk.Toplevel(rw)
 			win01.resizable(0,0)
 			win01.geometry("300x150")
