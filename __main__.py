@@ -1,6 +1,6 @@
 # __main__.py
 # 本文件是文件加密(File Encrypt)项目的一部分。
-# 当前版本：[17]
+# 当前版本：[18]
 # 修改内容：为方便后期更改，调整了部分细节
 
 import os,sys,webbrowser,zipfile,shutil,ctypes
@@ -34,31 +34,9 @@ if os.system("openssl version") != 0:
 		elif sys.platform.startswith("darwin"):
 			os.system("brew install openssl")
 			os.system("brew update openssl")
-			
-
-def zipdir(path, ziph):
-	# 循环遍历文件夹中的所有文件和子文件夹
-	for root, dirs, files in os.walk(path):
-		for file in files:
-		# 将每个文件添加到zip文件中
-			 ziph.write(os.path.join(root, file))
-
-def zip_folder(folder_path):
-	with zipfile.ZipFile(folder_path + ".zip", 'w') as zipObj:
-		zipdir(folder_path, zipObj)
-	return folder_path + ".zip"
-
-def rmdir(path):
-	
-
-	shutil.rmtree(path)
 
 def run():
-
 	def encrypt():
-		
-
-		
 		def onefile():
 			def ok():
 				if passwdentry.get() == repasswdentry.get():
@@ -102,7 +80,6 @@ def run():
 				messagebox.showwarning("文件加密","您未选择文件。")
 		
 		def onefolder():
-		
 			def ok():
 				if passwdentry.get() == repasswdentry.get():
 					delsrc = messagebox.askyesno("文件加密","在加密后删除源文件吗？")
@@ -142,6 +119,7 @@ def run():
 				okbutton.pack()
 			else:
 				messagebox.showwarning("文件加密","您未选择文件。")
+		
 		stw = tk.Toplevel(rw)# Select Type Window 选择类型（单个文件/单文件夹）
 		stw.geometry("100x100")
 		b1 = tk.Button(stw,text="单个文件",command=onefile)
@@ -149,9 +127,8 @@ def run():
 		b1.pack()
 		b2.pack()
 
-	# os.system("openssl enc -d -aes-256-cbc -in " + filename + " -out " + filename.removesuffix(".after_encrypt") + " -k " + label1.get()) # Encrypt Command
+
 	def deciphering():
-		
 		def onefile():
 			def ok():
 				messagebox.showwarning("文件加密","1.接下来可能会弹出一个黑色终端窗口，请勿直接关闭，否则解密将失败！\n2.在加/解密较大文件时，当前程序可能会无响应1分钟左右。请耐心等待，谢谢！")
@@ -164,11 +141,8 @@ def run():
 				else:
 					messagebox.showwarning("文件加密","解密失败；可能是您输入的密码有误，请重新输入。")
 					os.remove(filename.removesuffix(".after_encrypt"))
-			
-
 			filename = filedialog.askopenfilename(filetypes=[("加密后的文件","after_encrypt")])
 			if filename != "":
-				
 				win01 = tk.Toplevel(rw)
 				win01.resizable(0,0)
 				win01.geometry("300x100")
@@ -202,7 +176,6 @@ def run():
 				else:
 					messagebox.showwarning("文件加密","解密失败；可能是您输入的密码有误，请重新输入。")
 					os.remove(filename.removesuffix(".after_encrypt"))
-			
 
 			filename = filedialog.askdirectory()
 			if filename != "":
